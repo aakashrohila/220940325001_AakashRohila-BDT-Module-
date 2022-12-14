@@ -1,0 +1,24 @@
+from pyspark import SparkContext
+from pyspark.sql.session import SparkSession
+sc = SparkContext()
+spark = SparkSession(sc)
+
+from pyspark.sql.types import StructType , IntegerType , FloatType , StringType , LongType
+
+schema = StructType().add("year",IntegerType(),True).add("quarter",IntegerType(),True).add("avg_reve_per_seat",FloatType(),True).add("total_booked",IntegerType(),True)
+
+df_with_schema = spark.read.format("csv").option("header","True").schema(schema).load("/user/bigcdac43211/BDTExam/airlines.csv")
+
+df_with_schema.registerTempTable('airline')
+
+q1 = spark.sql("select year , sum(total_booked) as total_seats from airline group by year order by total_seats desc limit 5")
+
+q1.show()
+
+q2 = spark.sql("select year ,sum(avg_reve_per_seat) as avg_revenue from airline group by year order by avg_revenue desc limit 10")
+
+q2.show()
+
+q3 = spark.sql("select year, quarter ,sum(avg_reve_per_seat) as avg_revenue from airline group by year,quarter order by avg_revenue desc limit 10")
+
+q3.show()

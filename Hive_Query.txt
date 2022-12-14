@@ -1,0 +1,67 @@
+hive
+set hive.cli.print.current.db = true;
+use training_43211
+
+Q1)
+
+create table e_customer(
+cust_id int,
+firstname string,
+lastname string,
+age int,
+profession string )
+row format delimited
+fields terminated by ','
+stored as textfile;
+
+load data local inpath 'custs.txt' overwrite into table e_customer;
+
+select profession , count(cust_id) as total
+from e_customer
+group by profession
+order by total desc;
+
+Q2)
+
+create table e_sales(
+txn_id bigint,
+txn_date string,
+cust_id int,
+amount double,
+category string,
+product string,
+city string,
+state string,
+spendby string )
+row format delimited
+fields terminated by ','
+stored as textfile;
+
+load data local inpath 'txns1.txt' overwrite into table e_sales;
+
+from e_sales
+group by product
+order by total_sales desc
+limit 10;
+
+
+Q3)
+
+create table ep_sales(
+txn_id bigint,
+txn_date string,
+cust_id int,
+amount double,
+product string,
+city string,
+state string,
+spendby string )
+partitioned by (category string)
+row format delimited
+fields terminated by ','
+stored as textfile;
+
+
+
+
+
